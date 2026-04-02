@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}CardForge{% endblock %}</title>
+  <title>{% block title %}CMJO Digital Business Cards{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -30,30 +30,46 @@
       line-height: 1.6;
     }
 
-    /* ── Nav ── */
     nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.2rem 2rem;
+      padding: 0.8rem 2rem;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       background: rgba(8,8,8,0.92);
       backdrop-filter: blur(10px);
       z-index: 100;
+      gap: 1rem;
     }
     .nav-brand {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 300;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.08em;
       color: var(--gold);
       text-decoration: none;
+      white-space: nowrap;
     }
     .nav-brand span { font-style: italic; color: var(--text); }
 
-    /* ── Buttons ── */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .nav-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold-dim);
+      flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(201,169,98,0.2);
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -83,10 +99,8 @@
     .btn-danger:hover { background: var(--danger); color: #fff; }
     .btn-sm { padding: 0.35rem 0.85rem; font-size: 0.75rem; }
 
-    /* ── Container ── */
     .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
 
-    /* ── Page header ── */
     .page-header {
       display: flex;
       align-items: flex-end;
@@ -104,7 +118,6 @@
     }
     .page-header h1 span { color: var(--gold); font-style: italic; }
 
-    /* ── Forms ── */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -138,7 +151,6 @@
     }
     .field input::placeholder { color: var(--muted); }
 
-    /* ── Section divider ── */
     .section-label {
       font-size: 0.7rem;
       font-weight: 500;
@@ -157,17 +169,10 @@
       background: var(--border);
     }
 
-    /* ── Flash messages ── */
-    .flash { padding: 0.7rem 1rem; border-radius: var(--radius); margin-bottom: 1.5rem; font-size: 0.9rem; }
-    .flash-success { background: #1a2e1a; border: 1px solid #2d5a2d; color: #7bc87b; }
-    .flash-error   { background: #2e1a1a; border: 1px solid #5a2d2d; color: #c87b7b; }
-
-    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* ── Animations ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -178,8 +183,11 @@
 </head>
 <body>
   <nav>
-    <a href="{{ url_for('index') }}" class="nav-brand">Card<span>Forge</span></a>
-    <a href="{{ url_for('new_card') }}" class="btn btn-gold">+ New Card</a>
+    <a href="{{ url_for('index') }}" class="nav-brand">CMJO <span>Digital Business Cards</span></a>
+    <div class="nav-right">
+      <a href="{{ url_for('new_card') }}" class="btn btn-gold">+ New Card</a>
+      <img src="{{ url_for('static', filename='logo.png') }}" class="nav-logo" alt="CMJO Logo" />
+    </div>
   </nav>
   <div class="container animate-in">
     {% block content %}{% endblock %}
