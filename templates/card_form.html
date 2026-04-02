@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if action == 'edit' else 'New' }} Card — CardForge{% endblock %}
+
+{% block head %}
+<style>
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  /* Photo upload */
+  .photo-upload-area {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.2rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .photo-upload-area:hover { border-color: var(--gold-dim); }
+  .photo-preview {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+  .photo-placeholder {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .photo-text { flex: 1; }
+  .photo-text strong { display: block; font-size: 0.85rem; margin-bottom: 0.2rem; }
+  .photo-text span { font-size: 0.75rem; color: var(--muted); }
+  input[type="file"] { display: none; }
+
+  .form-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .social-prefix {
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 0.65rem 0.9rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+    white-space: nowrap;
+  }
+  .social-row { display: flex; align-items: stretch; }
+  .social-row input {
+    border-radius: 0 var(--radius) var(--radius) 0 !important;
+    border-left: none !important;
+  }
+  .social-row input:focus { border-left: 1px solid var(--gold-dim) !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ '<span>Edit</span>' | safe if action == 'edit' else '<span>New</span>' | safe }} Card</h1>
+  <a href="{{ url_for('index') }}" class="btn">← Back</a>
+</div>
+
+<div class="form-card">
+  <form method="POST" enctype="multipart/form-data">
+
+    <!-- Photo -->
+    <div class="section-label">Photo</div>
+    <label class="photo-upload-area" for="photo-input">
+      {% if card and card.photo %}
+        <img src="{{ url_for('static', filename=card.photo) }}" class="photo-preview" id="photo-preview" alt="Photo" />
+      {% else %}
+        <div class="photo-placeholder" id="photo-placeholder">👤</div>
+        <img src="" class="photo-preview" id="photo-preview" alt="Photo" style="display:none" />
+      {% endif %}
+      <div class="photo-text">
+        <strong>Upload a photo</strong>
+        <span>JPG, PNG or WEBP · Max 5MB</span>
+      </div>
+    </label>
+    <input type="file" name="photo" id="photo-input" accept="image/*" onchange="previewPhoto(this)" />
+
+    <!-- Personal Info -->
+    <div class="section-label">Personal Info</div>
+    <div class="form-grid">
+      <div class="field form-full">
+        <label>Full Name *</label>
+        <input type="text" name="name" placeholder="John Smith" value="{{ card.name if card else '' }}" required />
+      </div>
+      <div class="field">
+        <label>Job Title</label>
+        <input type="text" name="title" placeholder="Software Engineer" value="{{ card.title if card else '' }}" />
+      </div>
+      <div class="field">
+        <label>Company / Unit</label>
+        <input type="text" name="company" placeholder="ACME Corp / 1st Infantry Div" value="{{ card.company if card else '' }}" />
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="section-label">Contact</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" name="phone" placeholder="+1 (555) 000-0000" value="{{ card.phone if card else '' }}" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="john@example.com" value="{{ card.email if card else '' }}" />
+      </div>
+      <div class="field form-full">
+        <label>Website</label>
+        <input type="url" name="website" placeholder="https://yoursite.com" value="{{ card.website if card else '' }}" />
+      </div>
+    </div>
+
+    <!-- Social -->
+    <div class="section-label">Social Media</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>LinkedIn</label>
+        <div class="social-row">
+          <span class="social-prefix">linkedin.com/in/</span>
+          <input type="text" name="linkedin" placeholder="username" value="{{ card.linkedin if card else '' }}" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Twitter / X</label>
+        <div class="social-row">
+          <span class="social-prefix">@</span>
+          <input type="text" name="twitter" placeholder="handle" value="{{ card.twitter if card else '' }}" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Instagram</label>
+        <div class="social-row">
+          <span class="social-prefix">@</span>
+          <input type="text" name="instagram" placeholder="handle" value="{{ card.instagram if card else '' }}" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="{{ url_for('index') }}" class="btn">Cancel</a>
+      <button type="submit" class="btn btn-gold">
+        {{ 'Save Changes' if action == 'edit' else 'Create Card' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const preview = document.getElementById('photo-preview');
+        const placeholder = document.getElementById('photo-placeholder');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
+{% endblock %}
