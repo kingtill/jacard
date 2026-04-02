@@ -11,7 +11,11 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB limit
 
-CARDS_FILE = 'data/cards.json'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
+CARDS_FILE = os.path.join(DATA_DIR, 'cards.json')
+os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(os.path.join(BASE_DIR, 'static', 'uploads'), exist_ok=True)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 
