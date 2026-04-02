@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}CardForge — My Cards{% endblock %}
+
+{% block head %}
+<style>
+  .empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    margin-top: 1rem;
+  }
+  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+  .empty-state h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .empty-state p { color: var(--muted); margin-bottom: 1.8rem; font-size: 0.9rem; }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .card-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+  .card-tile:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .card-tile::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card-tile:hover::before { opacity: 1; }
+
+  .tile-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 2px solid var(--border);
+  }
+  .tile-avatar-placeholder {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    font-weight: 300;
+  }
+
+  .tile-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tile-subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tile-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .tile-date {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>My <span>Cards</span></h1>
+  <span style="color:var(--muted); font-size:0.85rem;">{{ cards|length }} card{{ 's' if cards|length != 1 }}</span>
+</div>
+
+{% if not cards %}
+<div class="empty-state">
+  <div class="icon">◈</div>
+  <h2>No cards yet</h2>
+  <p>Create your first digital business card and share it via NFC or QR code.</p>
+  <a href="{{ url_for('new_card') }}" class="btn btn-gold">Create Your First Card</a>
+</div>
+
+{% else %}
+<div class="cards-grid">
+  {% for card_id, card in cards.items() %}
+  <div class="card-tile">
+    <span class="tile-date">{{ card.created }}</span>
+    {% if card.photo %}
+      <img src="{{ url_for('static', filename=card.photo) }}" class="tile-avatar" alt="{{ card.name }}" />
+    {% else %}
+      <div class="tile-avatar-placeholder">{{ card.name[0] if card.name else '?' }}</div>
+    {% endif %}
+    <div class="tile-name">{{ card.name or 'Unnamed Card' }}</div>
+    <div class="tile-subtitle">
+      {{ card.title }}{% if card.title and card.company %} · {% endif %}{{ card.company }}
+    </div>
+    <div class="tile-actions">
+      <a href="{{ url_for('view_card', card_id=card.id) }}" class="btn btn-sm btn-gold">View</a>
+      <a href="{{ url_for('edit_card', card_id=card.id) }}" class="btn btn-sm">Edit</a>
+      <form action="{{ url_for('delete_card', card_id=card.id) }}" method="POST" style="display:inline"
+            onsubmit="return confirm('Delete this card?')">
+        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
