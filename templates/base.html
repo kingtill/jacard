@@ -23,13 +23,34 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: url("{{ url_for('static', filename='bg.png') }}");
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+      background-size: 55%;
       color: var(--text);
       min-height: 100vh;
       font-size: 15px;
       line-height: 1.6;
+      position: relative;
     }
 
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.72);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    nav, .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Nav ── */
     nav {
       display: flex;
       align-items: center;
@@ -43,6 +64,7 @@
       z-index: 100;
       gap: 1rem;
     }
+
     .nav-brand {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.4rem;
@@ -61,15 +83,16 @@
     }
 
     .nav-logo {
-      width: 72px;
-      height: 72px;
+      width: 144px;
+      height: 144px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--gold-dim);
       flex-shrink: 0;
-      box-shadow: 0 0 12px rgba(201,169,98,0.2);
+      box-shadow: 0 0 18px rgba(201,169,98,0.25);
     }
 
+    /* ── Buttons ── */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -99,8 +122,10 @@
     .btn-danger:hover { background: var(--danger); color: #fff; }
     .btn-sm { padding: 0.35rem 0.85rem; font-size: 0.75rem; }
 
+    /* ── Container ── */
     .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
 
+    /* ── Page header ── */
     .page-header {
       display: flex;
       align-items: flex-end;
@@ -118,6 +143,7 @@
     }
     .page-header h1 span { color: var(--gold); font-style: italic; }
 
+    /* ── Forms ── */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -151,6 +177,7 @@
     }
     .field input::placeholder { color: var(--muted); }
 
+    /* ── Section divider ── */
     .section-label {
       font-size: 0.7rem;
       font-weight: 500;
@@ -169,10 +196,12 @@
       background: var(--border);
     }
 
+    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+    /* ── Animations ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
